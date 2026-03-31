@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go Network — Custom Pathway Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  /*
+    FONT NOTES FOR DEPLOYMENT:
+    - "Feeling Passionate" (script/cover name): self-host this font and add @font-face below
+    - "Breul Grotesk A" (bold headlines): self-host and add @font-face below
+    - "Open Sauce One" (bullets/body): self-host and add @font-face below
+    Until self-hosted, fallbacks are used which are close but not exact.
+  */
+  
+    @font-face { font-family: 'Feeling Passionate'; src: url('fonts/FeelingPassionate.woff2'); }
+    @font-face { font-family: 'Breul Grotesk A'; src: url('fonts/BreulGroteskA-Bold.woff2'); font-weight: 700 900; }
+    @font-face { font-family: 'Open Sauce One'; src: url('fonts/OpenSauceOne-Regular.woff2'); }
+  
+
+  :root {
+    --red: #cf001e;
+    --black: #111;
+    --bg: #e8e8e8;
+    --panel: #fff;
+    --border: #ddd;
+    --muted: #888;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: #111;
+    padding: 13px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  .topbar-brand { color:#fff; font-size:17px; font-weight:800; letter-spacing:1px; }
+  .topbar-brand span { color: var(--red); }
+  .topbar-tag { color: rgba(255,255,255,.35); font-size:10px; letter-spacing:2px; text-transform:uppercase; font-weight:600; }
+  .topbar-right { margin-left:auto; }
+  .btn { border:none; border-radius:5px; padding:8px 16px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; letter-spacing:.5px; }
+  .btn-red { background:var(--red); color:#fff; }
+  .btn-red:hover { background:#a8001a; }
+  .btn-dark { background:#333; color:#fff; }
+  .btn-dark:hover { background:var(--red); }
+
+  /* ── LAYOUT ── */
+  .layout { display:grid; grid-template-columns:370px 1fr; flex:1; overflow:hidden; height:calc(100vh - 46px); }
+
+  /* ── SIDEBAR ── */
+  .sidebar { background:var(--panel); border-right:1px solid var(--border); overflow-y:auto; padding:20px 18px; display:flex; flex-direction:column; gap:18px; }
+  .sidebar h2 { font-size:16px; font-weight:800; }
+  .sidebar-sub { font-size:11px; color:var(--muted); margin-top:3px; line-height:1.5; }
+
+  .sec { display:flex; flex-direction:column; gap:9px; }
+  .sec-title { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--red); padding-bottom:5px; border-bottom:2px solid var(--red); }
+
+  .field { display:flex; flex-direction:column; gap:3px; }
+  .field label { font-size:11px; font-weight:600; }
+  input[type=text], textarea {
+    width:100%; padding:7px 9px; border:1.5px solid var(--border); border-radius:4px;
+    font-family:inherit; font-size:12px; background:#fafafa; outline:none; transition:border-color .15s;
+  }
+  input[type=text]:focus, textarea:focus { border-color:var(--red); background:#fff; }
+  textarea { resize:vertical; }
+
+  .hr { height:1px; background:var(--border); }
+
+  /* Step cards */
+  .step-card { background:#fafafa; border:1.5px solid var(--border); border-radius:6px; padding:10px; display:flex; flex-direction:column; gap:7px; margin-bottom:7px; }
+  .sc-row { display:flex; align-items:center; gap:7px; }
+  .sc-num { width:24px;height:24px; background:var(--red); border-radius:50%; color:#fff; font-size:10px; font-weight:700; display:flex;align-items:center;justify-content:center; flex-shrink:0; }
+  .sc-title { flex:1; font-weight:600!important; }
+  .btn-xs { background:none; border:none; color:#ccc; cursor:pointer; font-size:13px; padding:1px 3px; }
+  .btn-xs:hover { color:var(--red); }
+
+  .brow { display:flex; align-items:center; gap:5px; }
+  .bdot { width:4px;height:4px; background:var(--red); border-radius:50%; flex-shrink:0; }
+  .binput { flex:1; font-size:11px!important; padding:5px 7px!important; }
+
+  .btn-add-bullet { background:none; border:1.5px dashed var(--border); border-radius:3px; color:var(--muted); font-size:10px; font-weight:600; cursor:pointer; padding:3px 7px; font-family:inherit; margin-top:1px; }
+  .btn-add-bullet:hover { border-color:var(--red); color:var(--red); }
+  .btn-add-bullet:disabled { opacity:.4; cursor:default; }
+
+  .btn-add-step { width:100%; background:none; border:2px dashed var(--border); border-radius:6px; padding:9px; text-align:center; font-size:11px; font-weight:700; color:var(--muted); cursor:pointer; font-family:inherit; }
+  .btn-add-step:hover { border-color:var(--red); color:var(--red); }
+
+  .btn-generate { background:var(--red); color:#fff; border:none; border-radius:6px; padding:13px; font-size:14px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px; font-family:inherit; width:100%; }
+  .btn-generate:hover { background:#a8001a; }
+
+  .json-ta { min-height:90px!important; font-family:monospace!important; font-size:10px!important; }
+  .notice { font-size:10px; padding:6px 9px; border-radius:3px; display:none; margin-top:2px; }
+  .notice.show { display:block; }
+  .n-ok  { background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; }
+  .n-err { background:#fdecea; color:#b71c1c; border:1px solid #ef9a9a; }
+
+  /* ── PREVIEW ── */
+  .preview { overflow-y:auto; padding:24px; display:flex; flex-direction:column; align-items:center; gap:8px; background:#ddd; }
+  .pv-toolbar { width:100%; max-width:660px; display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+  .pv-label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#999; }
+  .pages { width:100%; max-width:660px; display:flex; flex-direction:column; gap:14px; }
+
+  /* ── PAGE ──
+     Natural size 1545×2000. All text positioned as % of those dimensions.
+     Aspect ratio locks the scaling so % positions stay accurate at any display size. */
+  .page {
+    width:100%;
+    aspect-ratio: 1545 / 2000;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 3px 18px rgba(0,0,0,.2);
+    background:#fff;
+  }
+  .page-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:fill; display:block; }
+
+  /* All overlays share these base styles */
+  .ov {
+    position:absolute;
+    /* text wraps within its box */
+    word-wrap:break-word;
+    overflow-wrap:break-word;
+  }
+
+  /* ──────────────────────────────────────
+     PAGE 1 — COVER
+     Measurements (from pixel analysis of 1545×2000 source):
+
+     Script name:  rows 720-940, cols 353-1441
+       top = 720/2000 = 36%,  left = 353/1545 = 22.8%,  width = (1441-353)/1545 = 70.4%
+       But text is centered in that zone — use full width + text-align:center is cleaner.
+
+     Bold title:   rows 956-1031, cols 700-1383
+       top = 956/2000 = 47.8%,  centered
+
+     Subtitle:     rows 1686-1719, cols 650-1018
+       top = 1686/2000 = 84.3%,  centered
+  ────────────────────────────────────── */
+  .p1-name {
+    top:34%; left:5%; width:90%;
+    text-align:center;
+    font-family:'Feeling Passionate','Dancing Script',cursive;
+    font-size:5.8vw;
+    color:var(--red);
+    line-height:1.1;
+  }
+  .p1-title {
+    top:47.5%; left:5%; width:90%;
+    text-align:center;
+    font-family:'Breul Grotesk A','Barlow Black','Arial Black',sans-serif;
+    font-weight:900;
+    font-size:3.8vw;
+    color:#fff;
+    line-height:1.15;
+  }
+  .p1-subtitle {
+    top:84%; left:10%; width:80%;
+    text-align:center;
+    font-family:'Open Sauce One','Open Sans',sans-serif;
+    font-size:1.2vw;
+    color:rgba(255,255,255,.75);
+    font-weight:400;
+  }
+
+  /* ──────────────────────────────────────
+     PAGE 3 — ROADMAP  (steps 1-3)
+     Step 1: title top=21.5%, bullets start 24.1% spacing ~2.6%
+     Step 2: title top=44.8%, bullets start 47.5%
+     Step 3: title top=68%,   bullets start 70.8%
+     All left=22.4%, width=22% (cols 346-686)
+  ────────────────────────────────────── */
+  .p3-title {
+    left:22.4%; width:23%;
+    font-family:'Breul Grotesk A','Barlow Black','Arial Black',sans-serif;
+    font-weight:800;
+    font-size:1.75vw;
+    color:#111;
+    line-height:1.15;
+  }
+  .p3-bullet {
+    left:23%; width:60%;
+    font-family:'Open Sauce One','Open Sans',sans-serif;
+    font-size:1.2vw;
+    color:#222;
+    line-height:1.5;
+    padding-left:0.8vw;
+    text-indent:-0.8vw;
+    min-height:1.5em;
+  }
+  .p3-bullet::before { content:'• '; }
+
+  /* Step 1 */
+  .p3-s1t  { top:21.5%; }
+  .p3-s1b1 { top:24.2%; }
+  .p3-s1b2 { top:27.0%; }
+  .p3-s1b3 { top:29.8%; }
+  .p3-s1b4 { top:32.6%; }
+
+  /* Step 2 */
+  .p3-s2t  { top:44.8%; }
+  .p3-s2b1 { top:47.5%; }
+  .p3-s2b2 { top:50.3%; }
+  .p3-s2b3 { top:53.1%; }
+  .p3-s2b4 { top:55.9%; }
+
+  /* Step 3 */
+  .p3-s3t  { top:68.0%; }
+  .p3-s3b1 { top:70.8%; }
+  .p3-s3b2 { top:73.6%; }
+  .p3-s3b3 { top:76.4%; }
+  .p3-s3b4 { top:79.2%; }
+
+  /* ──────────────────────────────────────
+     PAGE 4b — step 4 + People First wheel
+     Step 4 title: rows 209-247 → top=10.4%
+     Step 4 bullets start at 13%
+  ────────────────────────────────────── */
+  .p4-title {
+    left:22.4%; width:23%;
+    font-family:'Breul Grotesk A','Barlow Black','Arial Black',sans-serif;
+    font-weight:800;
+    font-size:1.75vw;
+    color:#111;
+    line-height:1.15;
+  }
+  .p4-bullet {
+    left:23%; width:60%;
+    font-family:'Open Sauce One','Open Sans',sans-serif;
+    font-size:1.2vw;
+    color:#222;
+    line-height:1.5;
+    padding-left:0.8vw;
+    text-indent:-0.8vw;
+    min-height:1.5em;
+  }
+  .p4-bullet::before { content:'• '; }
+
+  /* Page 4b: step 4 */
+  .p4b-s4t  { top:10.4%; }
+  .p4b-s4b1 { top:13.1%; }
+  .p4b-s4b2 { top:15.9%; }
+  .p4b-s4b3 { top:18.7%; }
+  .p4b-s4b4 { top:21.5%; }
+
+  /* Page 4c: steps 4 + 5 */
+  .p4c-s4t  { top:10.4%; }
+  .p4c-s4b1 { top:13.1%; }
+  .p4c-s4b2 { top:15.9%; }
+  .p4c-s4b3 { top:18.7%; }
+  .p4c-s4b4 { top:21.5%; }
+
+  .p4c-s5t  { top:32.5%; }
+  .p4c-s5b1 { top:35.2%; }
+  .p4c-s5b2 { top:38.0%; }
+  .p4c-s5b3 { top:40.8%; }
+  .p4c-s5b4 { top:43.6%; }
+
+  /* Empty state */
+  .empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#aaa; padding:60px 40px; text-align:center; }
+  .empty-icon { font-size:36px; }
+  .empty p { font-size:13px; line-height:1.6; max-width:260px; }
+
+  /* ── PRINT ── */
+  @media print {
+    .topbar,.sidebar,.pv-toolbar { display:none!important; }
+    body,.layout,.preview { display:block!important; overflow:visible!important; }
+    .preview { padding:0; background:white; }
+    .pages { max-width:100%; gap:0; }
+    .page { box-shadow:none; page-break-after:always; }
+    /* Print font sizes — approximate pt equivalents at Letter size */
+    .p1-name    { font-size:52pt; }
+    .p1-title   { font-size:32pt; }
+    .p1-subtitle{ font-size:10pt; }
+    .p3-title,.p4-title { font-size:13pt; }
+    .p3-bullet,.p4-bullet { font-size:10pt; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand"><span>GO</span> NETWORK</div>
+  <div class="topbar-tag">Pathway Generator</div>
+  <div class="topbar-right">
+    <button class="btn btn-red" onclick="window.print()">🖨 Print / Save PDF</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- ════════════ SIDEBAR ════════════ -->
+  <div class="sidebar">
+
+    <div>
+      <h2>Build Custom Pathway</h2>
+      <p class="sidebar-sub">Paste JSON from your Custom GPT to auto-fill, or enter manually.</p>
+    </div>
+
+    <!-- JSON -->
+    <div class="sec">
+      <div class="sec-title">Paste JSON from GPT</div>
+      <textarea class="json-ta" id="json-input" placeholder='{ "recruit": {...}, "pathway_steps": [...] }'></textarea>
+      <div id="json-notice" class="notice"></div>
+      <button class="btn btn-dark" onclick="parseJSON()">⚡ Parse &amp; Auto-Fill</button>
+    </div>
+
+    <div class="hr"></div>
+
+    <!-- COVER -->
+    <div class="sec">
+      <div class="sec-title">Cover Page</div>
+      <div class="field">
+        <label>Recruit Name <span style="color:#bbb;font-weight:400">(script font)</span></label>
+        <input type="text" id="f-name" placeholder="Luke Schenn" oninput="live()">
+      </div>
+      <div class="field">
+        <label>Cover Title <span style="color:#bbb;font-weight:400">(bold)</span></label>
+        <input type="text" id="f-title" placeholder="The Next Season of Your Business" oninput="live()">
+      </div>
+      <div class="field">
+        <label>Subtitle</label>
+        <input type="text" id="f-subtitle" placeholder="Luke Schenn x Go Network: The Next Chapter" oninput="live()">
+      </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <!-- STEPS -->
+    <div class="sec">
+      <div class="sec-title">Pathway Steps &nbsp;<span style="color:#bbb;font-weight:400;font-size:9px;letter-spacing:0">3–5 steps · 2–4 bullets each</span></div>
+      <div id="steps-container"></div>
+      <button class="btn-add-step" id="btn-add-step" onclick="addStep()">+ Add Step</button>
+    </div>
+
+    <button class="btn-generate" onclick="renderPages()">Generate Preview</button>
+
+  </div>
+
+  <!-- ════════════ PREVIEW ════════════ -->
+  <div class="preview">
+    <div class="pv-toolbar">
+      <span class="pv-label">Live Preview</span>
+    </div>
+    <div class="pages" id="pages">
+      <div class="empty">
+        <div class="empty-icon">📄</div>
+        <p>Fill in the fields and click <strong>Generate Preview</strong>, or paste your GPT JSON to auto-fill.</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<script>
+// ════════════════════════ STATE ════════════════════════
+let steps = [
+  {title:'', bullets:['','','']},
+  {title:'', bullets:['','','']},
+  {title:'', bullets:['','','']},
+];
+
+renderStepInputs();
+
+// ════════════════════════ STEP INPUTS ════════════════════════
+function renderStepInputs() {
+  const c = document.getElementById('steps-container');
+  c.innerHTML = '';
+  steps.forEach((s, si) => {
+    const card = document.createElement('div');
+    card.className = 'step-card';
+    const canRemove = steps.length > 3;
+    card.innerHTML = `
+      <div class="sc-row">
+        <div class="sc-num">${String(si+1).padStart(2,'0')}</div>
+        <input type="text" class="sc-title" placeholder="Step title (e.g. Stabilize)"
+          value="${x(s.title)}" oninput="steps[${si}].title=this.value;live()">
+        ${canRemove ? `<button class="btn-xs" onclick="removeStep(${si})">✕</button>` : ''}
+      </div>
+      <div id="bl-${si}">
+        ${s.bullets.map((b,bi)=>brow(si,bi,b)).join('')}
+      </div>
+      <button class="btn-add-bullet" onclick="addBullet(${si})" ${s.bullets.length>=4?'disabled':''}>
+        + Add bullet (max 4)
+      </button>`;
+    c.appendChild(card);
+  });
+  document.getElementById('btn-add-step').style.display = steps.length >= 5 ? 'none' : '';
+}
+
+function brow(si,bi,val){
+  const canDel = steps[si].bullets.length > 2;
+  return `<div class="brow">
+    <div class="bdot"></div>
+    <input type="text" class="binput" placeholder="Bullet point..."
+      value="${x(val)}" oninput="steps[${si}].bullets[${bi}]=this.value;live()">
+    ${canDel?`<button class="btn-xs" onclick="removeBullet(${si},${bi})">×</button>`:''}
+  </div>`;
+}
+
+function addStep(){
+  if(steps.length>=5) return;
+  steps.push({title:'',bullets:['','','']});
+  renderStepInputs();
+}
+function removeStep(si){
+  if(steps.length<=3) return;
+  steps.splice(si,1);
+  renderStepInputs(); live();
+}
+function addBullet(si){
+  if(steps[si].bullets.length>=4) return;
+  steps[si].bullets.push('');
+  renderStepInputs();
+}
+function removeBullet(si,bi){
+  if(steps[si].bullets.length<=2) return;
+  steps[si].bullets.splice(bi,1);
+  renderStepInputs(); live();
+}
+
+// ════════════════════════ JSON PARSE ════════════════════════
+function parseJSON(){
+  const raw = document.getElementById('json-input').value.trim();
+  const notice = document.getElementById('json-notice');
+  if(!raw){ showN(notice,'Paste a JSON object first.','err'); return; }
+  let d;
+  try { d = JSON.parse(raw); }
+  catch(e){ showN(notice,'Invalid JSON — check the format and try again.','err'); return; }
+  try {
+    document.getElementById('f-name').value    = d.recruit?.full_name || d.recruit?.first_name || '';
+    document.getElementById('f-title').value   = d.document?.cover_title || '';
+    document.getElementById('f-subtitle').value= d.document?.cover_subtitle || '';
+    if(Array.isArray(d.pathway_steps) && d.pathway_steps.length){
+      steps = d.pathway_steps.map(s=>({
+        title: s.title||'',
+        bullets: (s.bullets||[]).filter(Boolean).slice(0,4)
+      }));
+      steps.forEach(s=>{ while(s.bullets.length<2) s.bullets.push(''); });
+      while(steps.length<3) steps.push({title:'',bullets:['','','']});
+      steps = steps.slice(0,5);
+    }
+    renderStepInputs();
+    renderPages();
+    showN(notice,`✓ Loaded ${steps.length} steps for ${d.recruit?.full_name||'recruit'}.`,'ok');
+  } catch(e){ showN(notice,'Unexpected JSON structure — check field names.','err'); }
+}
+
+function showN(el,msg,type){
+  el.textContent=msg;
+  el.className='notice show '+(type==='ok'?'n-ok':'n-err');
+}
+
+// ════════════════════════ LIVE UPDATE ════════════════════════
+let liveT;
+function live(){ clearTimeout(liveT); liveT=setTimeout(renderPages,150); }
+
+// ════════════════════════ RENDER ════════════════════════
+function renderPages(){
+  const name     = document.getElementById('f-name').value.trim();
+  const title    = document.getElementById('f-title').value.trim();
+  const subtitle = document.getElementById('f-subtitle').value.trim();
+  const pgs      = document.getElementById('pages');
+
+  if(!name && !title && steps.every(s=>!s.title)){
+    pgs.innerHTML=`<div class="empty"><div class="empty-icon">📄</div><p>Fill in the fields and click <strong>Generate Preview</strong>, or paste your GPT JSON to auto-fill.</p></div>`;
+    return;
+  }
+
+  const n = steps.length; // 3, 4, or 5
+  let html = page1(name,title,subtitle) + page2();
+
+  html += page3(steps[0], steps[1], steps[2]);
+
+  if(n===3)      html += page4a();
+  else if(n===4) html += page4b(steps[3]);
+  else           html += page4c(steps[3], steps[4]);
+
+  pgs.innerHTML = html;
+  
+  // Apply dynamic positioning to bullet points
+  setTimeout(adjustBulletPositions, 100);
+}
+
+// ── Individual page builders ──
+
+function page1(name,title,subtitle){
+  return `<div class="page">
+    <img class="page-bg" src="bg_page1.png" alt="Cover background">
+    <div class="ov p1-name">${x(name)||'&nbsp;'}</div>
+    <div class="ov p1-title">${x(title)||'&nbsp;'}</div>
+    <div class="ov p1-subtitle">${x(subtitle)||'&nbsp;'}</div>
+  </div>`;
+}
+
+function page2(){
+  return `<div class="page"><img class="page-bg" src="bg_page2.png" alt="Two circles page"></div>`;
+}
+
+function page3(s1,s2,s3){
+  return `<div class="page">
+    <img class="page-bg" src="bg_page3.png" alt="Roadmap page">
+    ${stepOvs(s1,'p3-s1t','p3-s1b','p3-title','p3-bullet')}
+    ${stepOvs(s2,'p3-s2t','p3-s2b','p3-title','p3-bullet')}
+    ${stepOvs(s3,'p3-s3t','p3-s3b','p3-title','p3-bullet')}
+  </div>`;
+}
+
+function page4a(){
+  return `<div class="page"><img class="page-bg" src="bg_page4a.png" alt="People First page"></div>`;
+}
+
+function page4b(s4){
+  return `<div class="page">
+    <img class="page-bg" src="bg_page4b.png" alt="Step 4 + People First">
+    ${stepOvs(s4,'p4b-s4t','p4b-s4b','p4-title','p4-bullet')}
+  </div>`;
+}
+
+function page4c(s4,s5){
+  return `<div class="page">
+    <img class="page-bg" src="bg_page4c.png" alt="Steps 4-5 + People First">
+    ${stepOvs(s4,'p4c-s4t','p4c-s4b','p4-title','p4-bullet')}
+    ${stepOvs(s5||{title:'',bullets:[]},'p4c-s5t','p4c-s5b','p4-title','p4-bullet')}
+  </div>`;
+}
+
+// Build title + bullet overlays for one step
+function stepOvs(step, titleCls, bulletPrefix, titleBase, bulletBase){
+  if(!step) return '';
+  const bullets = (step.bullets||[]).filter(b=>b&&b.trim());
+  let h = `<div class="ov ${titleBase} ${titleCls}">${x(step.title)}</div>`;
+  
+  bullets.slice(0,4).forEach((b,i)=>{
+    h += `<div class="ov ${bulletBase} ${bulletPrefix}${i+1}" data-step="${titleCls}" data-bullet-idx="${i}">${x(b)}</div>`;
+  });
+  
+  return h;
+}
+
+// Helper function to get starting top position for bullets based on title class
+function getBulletStartTop(titleCls) {
+  const positions = {
+    'p3-s1t': 25.5,  // Moved down from 23.0
+    'p3-s2t': 48.5,  // Moved down from 46.0
+    'p3-s3t': 71.0,  // Moved down from 68.5
+    'p4b-s4t': 14.5, // Moved down from 12.0
+    'p4c-s4t': 14.5, // Moved down from 12.0
+    'p4c-s5t': 37.0  // Moved down from 34.5
+  };
+  return positions[titleCls] || 25.5;
+}
+
+// Dynamically adjust bullet positions based on content height
+function adjustBulletPositions() {
+  const pages = document.querySelectorAll('.page');
+  
+  pages.forEach(page => {
+    const bullets = page.querySelectorAll('.p3-bullet, .p4-bullet');
+    const stepGroups = {};
+    
+    // Group bullets by their step
+    bullets.forEach(bullet => {
+      const stepClass = bullet.getAttribute('data-step');
+      if (stepClass) {
+        if (!stepGroups[stepClass]) {
+          stepGroups[stepClass] = [];
+        }
+        stepGroups[stepClass].push(bullet);
+      }
+    });
+    
+    // Position bullets within each step group
+    Object.keys(stepGroups).forEach(stepClass => {
+      const stepBullets = stepGroups[stepClass].sort((a, b) => {
+        const idxA = parseInt(a.getAttribute('data-bullet-idx'));
+        const idxB = parseInt(b.getAttribute('data-bullet-idx'));
+        return idxA - idxB;
+      });
+      
+      let currentTop = getBulletStartTop(stepClass);
+      
+      stepBullets.forEach(bullet => {
+        const bulletHeight = bullet.offsetHeight;
+        const pageHeight = page.offsetHeight;
+        const heightPercent = (bulletHeight / pageHeight) * 100;
+        
+        bullet.style.top = currentTop + '%';
+        currentTop += Math.max(heightPercent + 0.8, 2.5); // Add 0.8% margin or use base 2.5%
+      });
+    });
+  });
+}
+
+// ════════════════════════ UTIL ════════════════════════
+function x(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

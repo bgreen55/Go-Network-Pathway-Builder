@@ -1,0 +1,38 @@
+{
+  "recruit": {
+    "full_name": "Test Recruit"
+  },
+  "document": {
+    "cover_title": "Test Career Pathway",
+    "cover_subtitle": "A journey to success"
+  },
+  "pathway_steps": [
+    {
+      "title": "Foundation Building",
+      "bullets": [
+        "Complete comprehensive training program and obtain all necessary certifications for real estate licensing",
+        "Build professional network with experienced mentors and industry connections",
+        "Develop marketing materials and establish personal brand identity",
+        "Set up business infrastructure including CRM systems and client databases"
+      ]
+    },
+    {
+      "title": "Market Entry",
+      "bullets": [
+        "Launch targeted marketing campaigns across multiple digital platforms and social media channels",
+        "Begin prospecting and lead generation activities through various channels",
+        "Conduct initial client consultations and property showings",
+        "Establish referral partnerships with complementary service providers"
+      ]
+    },
+    {
+      "title": "Growth Phase",
+      "bullets": [
+        "Expand client base through exceptional service and word-of-mouth referrals",
+        "Develop specialized expertise in luxury property markets or specific neighborhoods",
+        "Build team of support staff including assistants and coordinators",
+        "Implement advanced marketing strategies including video content and virtual tours"
+      ]
+    }
+  ]
+}
