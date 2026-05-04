@@ -1,0 +1,368 @@
+/*
+  FONT NOTES FOR DEPLOYMENT:
+  - "Feeling Passionate" (script/cover name): self-host this font and add @font-face below
+  - "Breul Grotesk A" (bold headlines): self-host and add @font-face below
+  - "Open Sauce One" (bullets/body): self-host and add @font-face below
+  Until self-hosted, fallbacks are used which are close but not exact.
+*/
+
+/* CSS Normalize for cross-browser consistency */
+html {
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+@font-face { font-family: 'Feeling Passionate'; src: url('fonts/FeelingPassionate.woff2'); }
+@font-face { font-family: 'Breul Grotesk A'; src: url('fonts/BreulGroteskA-Bold.woff2'); font-weight: 700 900; }
+@font-face { font-family: 'Open Sauce One'; src: url('fonts/OpenSauceOne-Regular.woff2'); }
+
+:root {
+  --red: #cf001e;
+  --black: #111;
+  --bg: #e8e8e8;
+  --panel: #fff;
+  --border: #ddd;
+  --muted: #888;
+}
+
+/* Reset margins and paddings */
+*, *::before, *::after { margin: 0; padding: 0; }
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+  background: #111;
+  padding: 13px 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.topbar-brand { color:#fff; font-size:17px; font-weight:800; letter-spacing:1px; }
+.topbar-brand span { color: var(--red); }
+.topbar-tag { color: rgba(255,255,255,.35); font-size:10px; letter-spacing:2px; text-transform:uppercase; font-weight:600; }
+.topbar-right { margin-left:auto; }
+.btn { border:none; border-radius:5px; padding:8px 16px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; letter-spacing:.5px; }
+.btn-red { background:var(--red); color:#fff; }
+.btn-red:hover { background:#a8001a; }
+.btn-dark { background:#333; color:#fff; }
+.btn-dark:hover { background:var(--red); }
+
+/* ── LAYOUT ── */
+.layout { 
+  display:grid; 
+  grid-template-columns:370px 1fr; 
+  flex:1; 
+  overflow:hidden; 
+  height:calc(100vh - 46px);
+  /* Fallback for older browsers */
+  display: -ms-grid;
+  -ms-grid-columns: 370px 1fr;
+}
+
+/* ── SIDEBAR ── */
+.sidebar { background:var(--panel); border-right:1px solid var(--border); overflow-y:auto; padding:20px 18px; display:flex; flex-direction:column; gap:18px; }
+.sidebar h2 { font-size:16px; font-weight:800; }
+.sidebar-sub { font-size:11px; color:var(--muted); margin-top:3px; line-height:1.5; }
+
+.sec { display:flex; flex-direction:column; gap:9px; }
+.sec-title { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--red); padding-bottom:5px; border-bottom:2px solid var(--red); }
+
+.field { display:flex; flex-direction:column; gap:3px; }
+.field label { font-size:11px; font-weight:600; }
+input[type=text], textarea {
+  width:100%; padding:7px 9px; border:1.5px solid var(--border); border-radius:4px;
+  font-family:inherit; font-size:12px; background:#fafafa; outline:none; transition:border-color .15s;
+}
+input[type=text]:focus, textarea:focus { border-color:var(--red); background:#fff; }
+textarea { resize:vertical; }
+
+.hr { height:1px; background:var(--border); }
+
+/* Step cards */
+.step-card { background:#fafafa; border:1.5px solid var(--border); border-radius:6px; padding:10px; display:flex; flex-direction:column; gap:7px; margin-bottom:7px; }
+.sc-row { display:flex; align-items:center; gap:7px; }
+.sc-num { width:24px;height:24px; background:var(--red); border-radius:50%; color:#fff; font-size:10px; font-weight:700; display:flex;align-items:center;justify-content:center; flex-shrink:0; }
+.sc-title { flex:1; font-weight:600!important; }
+.btn-xs { background:none; border:none; color:#ccc; cursor:pointer; font-size:13px; padding:1px 3px; }
+.btn-xs:hover { color:var(--red); }
+
+.brow { display:flex; align-items:center; gap:5px; }
+.bdot { width:4px;height:4px; background:var(--red); border-radius:50%; flex-shrink:0; }
+.binput { flex:1; font-size:11px!important; padding:5px 7px!important; }
+
+.btn-add-bullet { background:none; border:1.5px dashed var(--border); border-radius:3px; color:var(--muted); font-size:10px; font-weight:600; cursor:pointer; padding:3px 7px; font-family:inherit; margin-top:1px; }
+.btn-add-bullet:hover { border-color:var(--red); color:var(--red); }
+.btn-add-bullet:disabled { opacity:.4; cursor:default; }
+
+.btn-add-step { width:100%; background:none; border:2px dashed var(--border); border-radius:6px; padding:9px; text-align:center; font-size:11px; font-weight:700; color:var(--muted); cursor:pointer; font-family:inherit; }
+.btn-add-step:hover { border-color:var(--red); color:var(--red); }
+
+.btn-generate { background:var(--red); color:#fff; border:none; border-radius:6px; padding:13px; font-size:14px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px; font-family:inherit; width:100%; }
+.btn-generate:hover { background:#a8001a; }
+
+.json-ta { min-height:90px!important; font-family:monospace!important; font-size:10px!important; }
+.notice { font-size:10px; padding:6px 9px; border-radius:3px; display:none; margin-top:2px; }
+.notice.show { display:block; }
+.n-ok  { background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; }
+.n-err { background:#fdecea; color:#b71c1c; border:1px solid #ef9a9a; }
+
+/* ── PREVIEW ── */
+.preview { overflow-y:auto; padding:24px; display:flex; flex-direction:column; align-items:center; gap:8px; background:#ddd; }
+.pv-toolbar { width:100%; max-width:660px; display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; }
+.pv-label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:#999; }
+.pages { width:100%; max-width:660px; display:flex; flex-direction:column; gap:14px; }
+
+/* ── PAGE ──
+   Natural size 1545×2000. All text positioned as % of those dimensions.
+   Aspect ratio locks the scaling so % positions stay accurate at any display size. */
+.page {
+  width:100%;
+  aspect-ratio: 1545 / 2000;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 3px 18px rgba(0,0,0,.2);
+  background:#fff;
+  }
+
+/* Fallback for browsers that don't support aspect-ratio */
+.page::before {
+  content: '';
+  display: block;
+  padding-top: calc(2000 / 1545 * 100%);
+}
+@supports (aspect-ratio: 1545 / 2000) {
+  .page::before {
+    display: none;
+  }
+}
+.page-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:fill; display:block; }
+
+/* All overlays share these base styles */
+.ov {
+  position:absolute;
+  /* text wraps within its box */
+  word-wrap:break-word;
+  overflow-wrap:break-word;
+}
+
+/* ──────────────────────────────────────
+   PAGE 1 — COVER
+   Measurements (from pixel analysis of 1545×2000 source):
+
+   Script name:  rows 720-940, cols 353-1441
+     top = 720/2000 = 36%,  left = 353/1545 = 22.8%,  width = (1441-353)/1545 = 70.4%
+     But text is centered in that zone — use full width + text-align:center is cleaner.
+
+   Bold title:   rows 956-1031, cols 700-1383
+     top = 956/2000 = 47.8%,  centered
+
+   Subtitle:     rows 1686-1719, cols 650-1018
+     top = 1686/2000 = 84.3%,  centered
+────────────────────────────────────── */
+.page .ov.p1-name {
+  top:36%; right:8% !important; left:auto !important;
+  text-align:right !important;
+  font-family:'Feeling Passionate','Dancing Script',cursive !important;
+  font-size:52pt !important;
+  color:var(--red) !important;
+  line-height:1.1 !important;
+  width:fit-content !important;
+  max-width:75% !important;
+  display:flex !important;
+  flex-direction:column-reverse !important;
+  align-items:flex-end !important;
+  transform-origin:bottom right !important;
+}
+.name-second {
+  display:block !important;
+}
+.name-first {
+  display:block !important;
+  margin-bottom:0.1em !important;
+}
+.p1-title {
+  top:45%; right:8%; left:auto;
+  text-align:right;
+  font-family:'Breul Grotesk A','Barlow Black','Arial Black',sans-serif;
+  font-weight:900;
+  font-size:32pt;
+  color:#fff;
+  line-height:1.15;
+  width:fit-content;
+  max-width:80%;
+}
+.p1-subtitle {
+  top:84%; left:50%; transform:translateX(-50%);
+  text-align:center;
+  font-family:'Open Sauce One','Open Sans',sans-serif;
+  font-size:10pt;
+  color:rgba(255,255,255,.75);
+  font-weight:400;
+  width:80%;
+}
+
+/* ──────────────────────────────────────
+   PAGE 3 — ROADMAP  (steps 1-3)
+   Step 1: title top=21.5%, bullets start 24.1% spacing ~2.6%
+   Step 2: title top=44.8%, bullets start 47.5%
+   Step 3: title top=68%,   bullets start 70.8%
+   All left=22.4%, width=22% (cols 346-686)
+────────────────────────────────────── */
+.p3-title {
+  left:22.4%; width:75%;
+  font-family:'Breul Grotesk A','Barlow Black','Arial Black',sans-serif;
+  font-weight:800;
+  font-size:15pt;
+  color:#111;
+  line-height:1.15;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+}
+.p3-bullet {
+  left:23%; width:60%;
+  font-family:'Open Sauce One','Open Sans',sans-serif;
+  font-size:11pt;
+  color:#222;
+  line-height:1.5;
+  padding-left:0.8vw;
+  text-indent:-0.8vw;
+  min-height:1.5em;
+}
+.p3-bullet::before { content:'• '; }
+
+/* Step 1 — circle 01 center ≈ 19.6% of page height */
+.p3-s1t  { top:18.5%; }
+.p3-s1b1 { top:21.5%; }
+.p3-s1b2 { top:24.3%; }
+.p3-s1b3 { top:27.1%; }
+.p3-s1b4 { top:29.9%; }
+
+/* Step 2 — circle 02 center ≈ 47.3% of page height */
+.p3-s2t  { top:44.5%; }
+.p3-s2b1 { top:47.5%; }
+.p3-s2b2 { top:50.3%; }
+.p3-s2b3 { top:53.1%; }
+.p3-s2b4 { top:55.9%; }
+
+/* Step 3 — circle 03 center ≈ 75% of page height */
+.p3-s3t  { top:70.5%; }
+.p3-s3b1 { top:73.5%; }
+.p3-s3b2 { top:76.3%; }
+.p3-s3b3 { top:79.1%; }
+.p3-s3b4 { top:81.9%; }
+
+/* ──────────────────────────────────────
+   PAGE 4b — step 4 + People First wheel
+   Step 4 title: rows 209-247 → top=10.4%
+   Step 4 bullets start at 13%
+────────────────────────────────────── */
+.p4-title {
+  left:22.4%; width:75%;
+  font-family:'Breul Grotesk A','Barlow Black','Arial Black',sans-serif;
+  font-weight:800;
+  font-size:15pt;
+  color:#111;
+  line-height:1.15;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+}
+.p4-bullet {
+  left:23%; width:60%;
+  font-family:'Open Sauce One','Open Sans',sans-serif;
+  font-size:11pt;
+  color:#222;
+  line-height:1.5;
+  padding-left:0.8vw;
+  text-indent:-0.8vw;
+  min-height:1.5em;
+}
+.p4-bullet::before { content:'• '; }
+
+/* Page 4b: step 4 — circle 04 center ≈ 8.9% */
+.p4b-s4t  { top:6.0%; }
+.p4b-s4b1 { top:9.0%; }
+.p4b-s4b2 { top:11.8%; }
+.p4b-s4b3 { top:14.6%; }
+.p4b-s4b4 { top:17.4%; }
+
+/* Page 4c: step 4 — circle 04 center ≈ 8.3% */
+.p4c-s4t  { top:6.0%; }
+.p4c-s4b1 { top:9.0%; }
+.p4c-s4b2 { top:11.8%; }
+.p4c-s4b3 { top:14.6%; }
+.p4c-s4b4 { top:17.4%; }
+
+/* Page 4c: step 5 — circle 05 center ≈ 25.7% */
+.p4c-s5t  { top:31.0%; }
+.p4c-s5b1 { top:34.0%; }
+.p4c-s5b2 { top:36.8%; }
+.p4c-s5b3 { top:39.6%; }
+.p4c-s5b4 { top:42.4%; }
+
+/* Empty state */
+.empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#aaa; padding:60px 40px; text-align:center; }
+.empty-icon { font-size:36px; }
+.empty p { font-size:13px; line-height:1.6; max-width:260px; }
+
+/* ── PRINT ── */
+@media print {
+  .topbar,.sidebar,.pv-toolbar { display:none!important; }
+  body,.layout,.preview { display:block!important; overflow:visible!important; }
+  .preview { padding:0; background:white; }
+  .pages { max-width:100%; gap:0; }
+  .page { 
+    box-shadow:none; 
+    page-break-after:always;
+    /* Ensure consistent page size across browsers */
+    size: Letter;
+    margin: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  /* Print font sizes — approximate pt equivalents at Letter size */
+  .p1-name    { font-size:52pt !important; }
+  .p1-title   { font-size:32pt !important; }
+  .p1-subtitle{ font-size:10pt !important; }
+  .p3-title,.p4-title { font-size:13pt !important; }
+  .p3-bullet,.p4-bullet { font-size:10pt !important; }
+  
+  /* Browser-specific print fixes */
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
+    .page { 
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+  
+  /* Firefox print fix */
+  @media print and (-moz-images-in-menus:0) {
+    .page { page-break-inside: avoid; }
+  }
+  
+  /* Edge/IE print fix */
+  @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .page { width: 8.5in; height: 11in; }
+  }
+}

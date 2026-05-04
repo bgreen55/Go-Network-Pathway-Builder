@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go Network — Custom Pathway Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1.0">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand"><span>GO</span> NETWORK</div>
+  <div class="topbar-tag">Pathway Generator</div>
+  <div class="topbar-right">
+    <button class="btn btn-red" onclick="window.print()">🖨 Print / Save PDF</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- ════════════ SIDEBAR ════════════ -->
+  <div class="sidebar">
+
+    <div>
+      <h2>Build Custom Pathway</h2>
+      <p class="sidebar-sub">Paste JSON from your Custom GPT to auto-fill, or enter manually.</p>
+    </div>
+
+    <!-- JSON -->
+    <div class="sec">
+      <div class="sec-title">Paste JSON from GPT</div>
+      <textarea class="json-ta" id="json-input" placeholder='{ "recruit": {...}, "pathway_steps": [...] }'></textarea>
+      <div id="json-notice" class="notice"></div>
+      <button class="btn btn-dark" onclick="parseJSON()">⚡ Parse &amp; Auto-Fill</button>
+    </div>
+
+    <div class="hr"></div>
+
+    <!-- COVER -->
+    <div class="sec">
+      <div class="sec-title">Cover Page</div>
+      <div class="field">
+        <label>Recruit Name <span style="color:#bbb;font-weight:400">(script font)</span></label>
+        <input type="text" id="f-name" placeholder="Luke Schenn" oninput="live()">
+      </div>
+      <div class="field">
+        <label>Cover Title <span style="color:#bbb;font-weight:400">(bold)</span></label>
+        <input type="text" id="f-title" placeholder="The Next Season of Your Business" oninput="live()">
+      </div>
+      <div class="field">
+        <label>Subtitle</label>
+        <input type="text" id="f-subtitle" placeholder="Luke Schenn x Go Network: The Next Chapter" oninput="live()">
+      </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <!-- STEPS -->
+    <div class="sec">
+      <div class="sec-title">Pathway Steps &nbsp;<span style="color:#bbb;font-weight:400;font-size:9px;letter-spacing:0">3–5 steps · 2–4 bullets each</span></div>
+      <div id="steps-container"></div>
+      <button class="btn-add-step" id="btn-add-step" onclick="addStep()">+ Add Step</button>
+    </div>
+
+    <button class="btn-generate" onclick="renderPages()">Generate Preview</button>
+
+  </div>
+
+  <!-- ════════════ PREVIEW ════════════ -->
+  <div class="preview">
+    <div class="pv-toolbar">
+      <span class="pv-label">Live Preview</span>
+    </div>
+    <div class="pages" id="pages">
+      <div class="empty">
+        <div class="empty-icon">📄</div>
+        <p>Fill in the fields and click <strong>Generate Preview</strong>, or paste your GPT JSON to auto-fill.</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /layout -->
+
+<script src="script.js?v=2"></script>
+</body>
+</html>

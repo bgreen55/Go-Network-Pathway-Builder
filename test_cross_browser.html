@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cross-Browser Test - Go Network Pathway Generator</title>
+<style>
+body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+.test-section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.test-button { background: #cf001e; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+.test-button:hover { background: #a8001a; }
+.browser-info { background: #e3f2fd; padding: 10px; border-radius: 5px; margin: 10px 0; }
+.test-data { background: #f5f5f5; padding: 10px; border-radius: 5px; font-family: monospace; margin: 10px 0; }
+</style>
+</head>
+<body>
+<h1>🌐 Cross-Browser Compatibility Test</h1>
+
+<div class="browser-info">
+<strong>Current Browser Info:</strong>
+<div id="browser-info"></div>
+</div>
+
+<div class="test-section">
+<h2>📊 Test Plan</h2>
+<ol>
+<li><strong>Visual Layout Test:</strong> Check grid layout and positioning</li>
+<li><strong>Font Rendering Test:</strong> Verify custom fonts display correctly</li>
+<li><strong>Print Preview Test:</strong> Test print media queries</li>
+<li><strong>PDF Export Test:</strong> Generate PDF and compare</li>
+<li><strong>Responsive Test:</strong> Test viewport units (vw)</li>
+</ol>
+</div>
+
+<div class="test-section">
+<h2>🧪 Quick Tests</h2>
+<button class="test-button" onclick="runLayoutTest()">Test Layout</button>
+<button class="test-button" onclick="runFontTest()">Test Fonts</button>
+<button class="test-button" onclick="runPrintTest()">Test Print Preview</button>
+<button class="test-button" onclick="window.open('index.html', '_blank')">Open Main App</button>
+</div>
+
+<div class="test-section">
+<h2>📝 Test Data</h2>
+<div class="test-data">
+{
+  "recruit": {
+    "full_name": "Test User"
+  },
+  "document": {
+    "cover_title": "Cross-Browser Test Title",
+    "cover_subtitle": "Testing consistency across browsers"
+  },
+  "pathway_steps": [
+    {
+      "title": "Step One Test",
+      "bullets": ["First bullet point test", "Second bullet point test", "Third bullet point test"]
+    },
+    {
+      "title": "Step Two Test", 
+      "bullets": ["Another bullet test", "More content here", "Final test bullet"]
+    },
+    {
+      "title": "Step Three Test",
+      "bullets": ["Testing step three", "Browser compatibility", "PDF consistency"]
+    }
+  ]
+}
+</div>
+<button class="test-button" onclick="copyTestData()">Copy Test Data</button>
+</div>
+
+<div class="test-section">
+<h2>✅ Checklist</h2>
+<ul>
+<li>□ Layout looks identical in Chrome, Firefox, Safari</li>
+<li>□ Custom fonts load and display correctly</li>
+<li>□ Print preview shows proper page breaks</li>
+<li>□ PDF export generates without errors</li>
+<li>□ Text positioning is consistent</li>
+<li>□ Colors render correctly</li>
+<li>□ No console errors</li>
+</ul>
+</div>
+
+<script>
+// Display browser information
+document.getElementById('browser-info').innerHTML = `
+User Agent: ${navigator.userAgent}<br>
+Platform: ${navigator.platform}<br>
+Language: ${navigator.language}<br>
+Online: ${navigator.onLine}<br>
+Cookies Enabled: ${navigator.cookieEnabled}<br>
+Screen: ${screen.width}x${screen.height}
+`;
+
+function copyTestData() {
+  const testData = document.querySelector('.test-data').textContent.trim();
+  navigator.clipboard.writeText(testData).then(() => {
+    alert('Test data copied to clipboard! Paste it into the main app.');
+  });
+}
+
+function runLayoutTest() {
+  window.open('index.html', '_blank');
+  console.log('Layout test: Check grid layout, positioning, and responsive behavior');
+}
+
+function runFontTest() {
+  window.open('index.html', '_blank');
+  console.log('Font test: Verify custom fonts (Feeling Passionate, Breul Grotesk A, Open Sauce One) load correctly');
+}
+
+function runPrintTest() {
+  window.open('index.html', '_blank');
+  setTimeout(() => {
+    window.print();
+  }, 1000);
+  console.log('Print test: Check print media queries and PDF output');
+}
+</script>
+</body>
+</html>
