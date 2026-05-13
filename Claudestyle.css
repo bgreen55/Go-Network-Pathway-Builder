@@ -1,3 +1,11 @@
+/*
+  FONT NOTES FOR DEPLOYMENT:
+  - "Feeling Passionate" (script/cover name): self-host this font and add @font-face below
+  - "Breul Grotesk A" (bold headlines): self-host and add @font-face below
+  - "Open Sauce One" (bullets/body): self-host and add @font-face below
+  Until self-hosted, fallbacks are used which are close but not exact.
+*/
+
 /* CSS Normalize for cross-browser consistency */
 html {
   line-height: 1.15;
@@ -171,10 +179,10 @@ textarea { resize:vertical; }
      top = 1686/2000 = 84.3%,  centered
 ────────────────────────────────────── */
 .page .ov.p1-name {
-  bottom:55%; top:auto !important; right:8% !important; left:auto !important;
+  top:36%; right:8% !important; left:auto !important;
   text-align:right !important;
   font-family:'Feeling Passionate','Dancing Script',cursive !important;
-  font-size: 55pt !important;
+  font-size:5.8vw !important;
   color:var(--red) !important;
   line-height:1.1 !important;
   width:fit-content !important;
@@ -185,7 +193,7 @@ textarea { resize:vertical; }
   text-align:right;
   font-family:'Breul Grotesk A','Barlow Black','Arial Black',sans-serif;
   font-weight:900;
-  font-size:32pt;
+  font-size:3.8vw;
   color:#fff;
   line-height:1.15;
   width:fit-content;
@@ -195,7 +203,7 @@ textarea { resize:vertical; }
   top:84%; left:50%; transform:translateX(-50%);
   text-align:center;
   font-family:'Open Sauce One','Open Sans',sans-serif;
-  font-size:10pt;
+  font-size:1.2vw;
   color:rgba(255,255,255,.75);
   font-weight:400;
   width:80%;
@@ -212,7 +220,7 @@ textarea { resize:vertical; }
   left:22.4%; width:75%;
   font-family:'Breul Grotesk A','Barlow Black','Arial Black',sans-serif;
   font-weight:800;
-  font-size:15pt;
+  font-size:1.75vw;
   color:#111;
   line-height:1.15;
   white-space: nowrap;
@@ -222,7 +230,7 @@ textarea { resize:vertical; }
 .p3-bullet {
   left:23%; width:60%;
   font-family:'Open Sauce One','Open Sans',sans-serif;
-  font-size:11pt;
+  font-size:1.2vw;
   color:#222;
   line-height:1.5;
   padding-left:0.8vw;
@@ -231,26 +239,26 @@ textarea { resize:vertical; }
 }
 .p3-bullet::before { content:'• '; }
 
-/* Step 1 — circle 01 center ≈ 19.6% of page height */
-.p3-s1t  { top:18.5%; }
-.p3-s1b1 { top:21.5%; }
-.p3-s1b2 { top:24.3%; }
-.p3-s1b3 { top:27.1%; }
-.p3-s1b4 { top:29.9%; }
+/* Step 1 */
+.p3-s1t  { top:21.5%; }
+.p3-s1b1 { top:24.2%; }
+.p3-s1b2 { top:27.0%; }
+.p3-s1b3 { top:29.8%; }
+.p3-s1b4 { top:32.6%; }
 
-/* Step 2 — circle 02 center ≈ 47.3% of page height */
-.p3-s2t  { top:44.5%; }
+/* Step 2 */
+.p3-s2t  { top:44.8%; }
 .p3-s2b1 { top:47.5%; }
 .p3-s2b2 { top:50.3%; }
 .p3-s2b3 { top:53.1%; }
 .p3-s2b4 { top:55.9%; }
 
-/* Step 3 — circle 03 center ≈ 75% of page height */
-.p3-s3t  { top:70.5%; }
-.p3-s3b1 { top:73.5%; }
-.p3-s3b2 { top:76.3%; }
-.p3-s3b3 { top:79.1%; }
-.p3-s3b4 { top:81.9%; }
+/* Step 3 */
+.p3-s3t  { top:68.0%; }
+.p3-s3b1 { top:70.8%; }
+.p3-s3b2 { top:73.6%; }
+.p3-s3b3 { top:76.4%; }
+.p3-s3b4 { top:79.2%; }
 
 /* ──────────────────────────────────────
    PAGE 4b — step 4 + People First wheel
@@ -261,7 +269,7 @@ textarea { resize:vertical; }
   left:22.4%; width:75%;
   font-family:'Breul Grotesk A','Barlow Black','Arial Black',sans-serif;
   font-weight:800;
-  font-size:15pt;
+  font-size:1.75vw;
   color:#111;
   line-height:1.15;
   white-space: nowrap;
@@ -271,7 +279,7 @@ textarea { resize:vertical; }
 .p4-bullet {
   left:23%; width:60%;
   font-family:'Open Sauce One','Open Sans',sans-serif;
-  font-size:11pt;
+  font-size:1.2vw;
   color:#222;
   line-height:1.5;
   padding-left:0.8vw;
@@ -280,92 +288,79 @@ textarea { resize:vertical; }
 }
 .p4-bullet::before { content:'• '; }
 
-/* Page 4b: step 4 — circle 04 center ≈ 8.9% */
-.p4b-s4t  { top:6.0%; }
-.p4b-s4b1 { top:9.0%; }
-.p4b-s4b2 { top:11.8%; }
-.p4b-s4b3 { top:14.6%; }
-.p4b-s4b4 { top:17.4%; }
+/* Page 4b: step 4 */
+.p4b-s4t  { top:10.4%; }
+.p4b-s4b1 { top:13.1%; }
+.p4b-s4b2 { top:15.9%; }
+.p4b-s4b3 { top:18.7%; }
+.p4b-s4b4 { top:21.5%; }
 
-/* Page 4c: step 4 — circle 04 center ≈ 8.3% */
-.p4c-s4t  { top:6.0%; }
-.p4c-s4b1 { top:9.0%; }
-.p4c-s4b2 { top:11.8%; }
-.p4c-s4b3 { top:14.6%; }
-.p4c-s4b4 { top:17.4%; }
+/* Page 4c: steps 4 + 5 */
+.p4c-s4t  { top:10.4%; }
+.p4c-s4b1 { top:13.1%; }
+.p4c-s4b2 { top:15.9%; }
+.p4c-s4b3 { top:18.7%; }
+.p4c-s4b4 { top:21.5%; }
 
-/* Page 4c: step 5 — circle 05 center ≈ 25.7% */
-.p4c-s5t  { top:31.0%; }
-.p4c-s5b1 { top:34.0%; }
-.p4c-s5b2 { top:36.8%; }
-.p4c-s5b3 { top:39.6%; }
-.p4c-s5b4 { top:42.4%; }
+.p4c-s5t  { top:32.5%; }
+.p4c-s5b1 { top:35.2%; }
+.p4c-s5b2 { top:38.0%; }
+.p4c-s5b3 { top:40.8%; }
+.p4c-s5b4 { top:43.6%; }
 
 /* Empty state */
 .empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:#aaa; padding:60px 40px; text-align:center; }
 .empty-icon { font-size:36px; }
 .empty p { font-size:13px; line-height:1.6; max-width:260px; }
 
-/* ── UPDATED PRINT SECTION ── */
+/* ── PRINT ── */
 @media print {
-  /* 1. Remove browser headers/footers and margins */
   @page {
+    size: Letter portrait;
     margin: 0;
-    size: auto;
   }
 
-  /* 2. Hide UI elements */
-  .topbar, .sidebar, .pv-toolbar, .btn-generate { 
-    display: none !important; 
-  }
+  .topbar, .sidebar, .pv-toolbar { display:none !important; }
 
-  /* 3. Reset layout for a clean vertical stack */
-  body, .layout, .preview, .pages { 
-    display: block !important; 
-    width: 100% !important;
-    height: auto !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    background: white !important;
+  body, .layout, .preview {
+    display: block !important;
     overflow: visible !important;
-  }
-
-  /* 4. Force the page to be exactly the size of the paper */
-  .page { 
-    box-shadow: none !important; 
-    page-break-after: always !important;
-    width: 100vw !important; /* Spans full width of the print area */
-    height: 129.45vw !important; /* Maintains your 1545/2000 ratio */
+    width: 100% !important;
     margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  .preview { padding: 0 !important; background: white !important; }
+  .pages   { max-width: 100% !important; gap: 0 !important; display: block !important; }
+
+  /*
+    Strategy: fix each page at the live-preview render width (660px),
+    then scale up to fill the Letter page (8.5in @ 96dpi = 816px).
+    Scale factor = 816 / 660 = 1.2364.
+    The extra margin-bottom compensates for the scaled height so pages
+    don't overlap each other in the print flow.
+  */
+  .page {
+    box-shadow: none !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+
+    width: 660px !important;
+    height: calc(660px * 2000 / 1545) !important;
+
+    transform: scale(1.2364) !important;
+    transform-origin: top left !important;
+
+    /* Push subsequent pages down to account for the scaled height */
+    margin-top: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-bottom: calc(660px * 2000 / 1545 * 0.2364) !important;
+
+    overflow: hidden !important;
     position: relative !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
   }
-
-  /* 5. FIX: Convert VW font size to PT for print consistency */
-  .page .ov.p1-name {
-    font-size: 55pt !important; /* Adjust this number to match your desired screen look */
-  }
-
-  /* 6. Scale up specific text to match screen proportions */
-  .p3-title, .p4-title {
-    font-size: 19pt !important; /* Bumped up from 15pt */
-  }
-
-  .p3-bullet, .p4-bullet {
-    font-size: 14pt !important; /* Bumped up from 11pt */
-  }
-
-  .p1-subtitle {
-    font-size: 13pt !important; /* Bumped up from 10pt just in case! */
-  }
-}
-  /* Maintain same font sizes as screen preview */
-  
-  /* Browser-specific print fixes */
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-    .page { 
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
 }

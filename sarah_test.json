@@ -1,0 +1,37 @@
+{
+  "recruit": {
+    "first_name": "Sarah",
+    "full_name": "Sarah Jenkins",
+    "agent_type": "transfer_agent"
+  },
+  "document": {
+    "cover_title": "Breaking Through the $3 Million Glass Ceiling",
+    "cover_subtitle": "Sarah Jenkins x Go Network: Scaling Professional Systems"
+  },
+  "pathway_steps": [
+    {
+      "title": "Lead Diversification",
+      "bullets": [
+        "Transition from solo cold calling to automated CRM workflows",
+        "Implement the 10-point marketing plan for current sphere",
+        "Target three new geographic segments in the North End"
+      ]
+    },
+    {
+      "title": "Operational Leverage",
+      "bullets": [
+        "Offload transaction coordination to focus on high-value appointments",
+        "Utilize weekly syncs to eliminate administrative bottleneck issues",
+        "Standardize listing presentations to save five hours weekly"
+      ]
+    },
+    {
+      "title": "Production Growth",
+      "bullets": [
+        "Attend Tuesday mastermind sessions to refine luxury negotiation skills",
+        "Execute the 'Listing Mastery' series within first thirty days",
+        "Target consistent $5M annual volume through referral networking"
+      ]
+    }
+  ]
+}

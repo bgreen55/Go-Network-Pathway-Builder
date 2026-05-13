@@ -1,3 +1,11 @@
+/*
+  FONT NOTES FOR DEPLOYMENT:
+  - "Feeling Passionate" (script/cover name): self-host this font and add @font-face below
+  - "Breul Grotesk A" (bold headlines): self-host and add @font-face below
+  - "Open Sauce One" (bullets/body): self-host and add @font-face below
+  Until self-hosted, fallbacks are used which are close but not exact.
+*/
+
 /* CSS Normalize for cross-browser consistency */
 html {
   line-height: 1.15;
@@ -174,7 +182,7 @@ textarea { resize:vertical; }
   bottom:55%; top:auto !important; right:8% !important; left:auto !important;
   text-align:right !important;
   font-family:'Feeling Passionate','Dancing Script',cursive !important;
-  font-size: 55pt !important;
+  font-size:5.8vw !important;
   color:var(--red) !important;
   line-height:1.1 !important;
   width:fit-content !important;
@@ -306,66 +314,32 @@ textarea { resize:vertical; }
 .empty-icon { font-size:36px; }
 .empty p { font-size:13px; line-height:1.6; max-width:260px; }
 
-/* ── UPDATED PRINT SECTION ── */
+/* ── PRINT ── */
 @media print {
-  /* 1. Remove browser headers/footers and margins */
-  @page {
-    margin: 0;
-    size: auto;
-  }
-
-  /* 2. Hide UI elements */
-  .topbar, .sidebar, .pv-toolbar, .btn-generate { 
-    display: none !important; 
-  }
-
-  /* 3. Reset layout for a clean vertical stack */
-  body, .layout, .preview, .pages { 
-    display: block !important; 
-    width: 100% !important;
-    height: auto !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    background: white !important;
-    overflow: visible !important;
-  }
-
-  /* 4. Force the page to be exactly the size of the paper */
+  .topbar,.sidebar,.pv-toolbar { display:none!important; }
+  body,.layout,.preview { display:block!important; overflow:visible!important; }
+  .preview { padding:0; background:white; }
+  .pages { max-width:100%; gap:0; }
   .page { 
-    box-shadow: none !important; 
-    page-break-after: always !important;
-    width: 100vw !important; /* Spans full width of the print area */
-    height: 129.45vw !important; /* Maintains your 1545/2000 ratio */
-    margin: 0 !important;
-    position: relative !important;
+    box-shadow:none; 
+    page-break-after:always;
+    /* Maintain same aspect ratio and scaling as screen */
+    width: 8.5in !important;
+    aspect-ratio: 1545 / 2000 !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    overflow: hidden !important;
   }
-
-  /* 5. FIX: Convert VW font size to PT for print consistency */
-  .page .ov.p1-name {
-    font-size: 55pt !important; /* Adjust this number to match your desired screen look */
-  }
-
-  /* 6. Scale up specific text to match screen proportions */
-  .p3-title, .p4-title {
-    font-size: 19pt !important; /* Bumped up from 15pt */
-  }
-
-  .p3-bullet, .p4-bullet {
-    font-size: 14pt !important; /* Bumped up from 11pt */
-  }
-
-  .p1-subtitle {
-    font-size: 13pt !important; /* Bumped up from 10pt just in case! */
-  }
-}
+  
   /* Maintain same font sizes as screen preview */
   
   /* Browser-specific print fixes */
-@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @media screen and (-webkit-min-device-pixel-ratio:0) {
     .page { 
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
     }
+  }
 }
