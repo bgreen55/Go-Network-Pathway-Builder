@@ -177,8 +177,9 @@ textarea { resize:vertical; }
   font-size: 55pt !important;
   color:var(--red) !important;
   line-height:1.1 !important;
-  width:fit-content !important;
+  white-space: nowrap !important;
   max-width:75% !important;
+  overflow: visible !important;
 }
 .p1-title {
   top:45%; right:8%; left:auto;
@@ -306,66 +307,66 @@ textarea { resize:vertical; }
 .empty-icon { font-size:36px; }
 .empty p { font-size:13px; line-height:1.6; max-width:260px; }
 
-/* ── UPDATED PRINT SECTION ── */
+/* ── PRINT ── */
 @media print {
-  /* 1. Remove browser headers/footers and margins */
+  /* 1. Set paper to letter portrait with zero margin */
   @page {
     margin: 0;
-    size: auto;
+    size: letter portrait; /* 8.5in × 11in — ratio 0.7727, design ratio 0.7725 — negligible */
   }
 
-  /* 2. Hide UI elements */
-  .topbar, .sidebar, .pv-toolbar, .btn-generate { 
-    display: none !important; 
+  /* 2. Hide all UI chrome */
+  .topbar, .sidebar, .pv-toolbar, .btn-generate {
+    display: none !important;
   }
 
-  /* 3. Reset layout for a clean vertical stack */
-  body, .layout, .preview, .pages { 
-    display: block !important; 
+  /* 3. Reset every ancestor so they don't constrain .page width */
+  html, body, .layout, .preview, .pages {
+    display: block !important;
     width: 100% !important;
+    max-width: none !important;
     height: auto !important;
     padding: 0 !important;
     margin: 0 !important;
     background: white !important;
     overflow: visible !important;
   }
+  .pages { gap: 0 !important; }
 
-  /* 4. Force the page to be exactly the size of the paper */
-  .page { 
-    box-shadow: none !important; 
-    page-break-after: always !important;
-    width: 100vw !important; /* Spans full width of the print area */
-    height: 129.45vw !important; /* Maintains your 1545/2000 ratio */
+  /* 4. Suppress the aspect-ratio fallback pseudo-element —
+        we're using explicit in / pt sizing so it's not needed and causes extra space */
+  .page::before {
+    display: none !important;
+  }
+
+  /* 5. Each .page = exactly one sheet of letter paper.
+        Explicit physical units are the only thing Chrome honours reliably in print.
+        vw/vh map to the screen viewport; % can be constrained by ancestors;
+        padding-top tricks can misfire. 8.5in × 11in is unambiguous. */
+  .page {
+    box-shadow: none !important;
+    break-after: page;
+    page-break-after: always;
+    width: 8.5in !important;
+    height: 11in !important;
+    aspect-ratio: auto !important;
     margin: 0 !important;
+    padding: 0 !important;
     position: relative !important;
+    overflow: hidden !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  /* 5. FIX: Convert VW font size to PT for print consistency */
-  .page .ov.p1-name {
-    font-size: 55pt !important; /* Adjust this number to match your desired screen look */
+  /* 6. No blank page after the very last section */
+  .page:last-child {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
   }
 
-  /* 6. Scale up specific text to match screen proportions */
-  .p3-title, .p4-title {
-    font-size: 19pt !important; /* Bumped up from 15pt */
-  }
-
-  .p3-bullet, .p4-bullet {
-    font-size: 14pt !important; /* Bumped up from 11pt */
-  }
-
-  .p1-subtitle {
-    font-size: 13pt !important; /* Bumped up from 10pt just in case! */
-  }
-}
-  /* Maintain same font sizes as screen preview */
-  
-  /* Browser-specific print fixes */
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-    .page { 
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-    }
+  /* 7. Font sizes for print */
+  .page .ov.p1-name  { font-size: 55pt !important; }
+  .p3-title, .p4-title { font-size: 19pt !important; }
+  .p3-bullet, .p4-bullet { font-size: 14pt !important; }
+  .p1-subtitle { font-size: 13pt !important; }
 }
