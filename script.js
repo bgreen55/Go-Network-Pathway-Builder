@@ -1,4 +1,6 @@
 // ════════════════════════ STATE ════════════════════════
+console.log('%c[Go Network] script.js loaded ✓', 'color:#cf001e;font-weight:bold');
+
 let steps = [
   {title:'', bullets:['','','']},
   {title:'', bullets:['','','']},
@@ -6,6 +8,7 @@ let steps = [
 ];
 
 renderStepInputs();
+console.log('[Go Network] Initial step inputs rendered, steps:', steps.length);
 
 // ════════════════════════ STEP INPUTS ════════════════════════
 function renderStepInputs() {
@@ -100,25 +103,9 @@ function showN(el,msg,type){
 let liveT;
 function live(){ clearTimeout(liveT); liveT=setTimeout(renderPages,150); }
 
-// ════════════════════════ NAME SPLITTING ════════════════════════
+// ════════════════════════ NAME DISPLAY ════════════════════════
 function formatNameForDisplay(name) {
-  if (!name || name.length <= 15) return name; // Return as-is if short enough
-  
-  // Find a good split point (preferably at a space or natural break)
-  const words = name.trim().split(' ');
-  if (words.length === 1) {
-    // Single word name - split in the middle
-    const midPoint = Math.floor(name.length / 2);
-    const firstPart = name.slice(0, midPoint);
-    const secondPart = name.slice(midPoint);
-    return `<span class="name-first">${firstPart}</span><span class="name-second">${secondPart}</span>`;
-  } else {
-    // Multi-word name - split between words
-    const midPoint = Math.floor(words.length / 2);
-    const firstHalf = words.slice(0, midPoint).join(' ');
-    const secondHalf = words.slice(midPoint).join(' ');
-    return `<span class="name-first">${firstHalf}</span><span class="name-second">${secondHalf}</span>`;
-  }
+  return x(name); // Always render on one line; font size is shrunk dynamically by adjustNameFontSize()
 }
 
 // ════════════════════════ RENDER ════════════════════════
@@ -127,6 +114,8 @@ function renderPages(){
   const title    = document.getElementById('f-title').value.trim();
   const subtitle = document.getElementById('f-subtitle').value.trim();
   const pgs      = document.getElementById('pages');
+
+  console.log('[Go Network] renderPages() — name:', name || '(empty)', '| steps:', steps.length);
 
   if(!name && !title && steps.every(s=>!s.title)){
     pgs.innerHTML=`<div class="empty"><div class="empty-icon">📄</div><p>Fill in fields and click <strong>Generate Preview</strong>, or paste your GPT JSON to auto-fill.</p></div>`;
@@ -262,27 +251,36 @@ function adjustBulletPositions() {
   });
 }
 
-// Adjust recruit name position upward when it wraps to avoid overlapping title
+// Shrink the recruit name font size so it always fits on one line
 function adjustNamePosition() {
-  const nameElement = document.querySelector('.p1-name');
-  if (!nameElement) return;
-  
-  const nameFirst = nameElement.querySelector('.name-first');
-  const nameSecond = nameElement.querySelector('.name-second');
-  
-  // Check if name is wrapped (both elements exist and have content)
-  if (nameFirst && nameSecond && nameFirst.textContent.trim() && nameSecond.textContent.trim()) {
-    // Calculate the height of the first name part
-    const firstNameHeight = nameFirst.offsetHeight;
-    const pageHeight = nameElement.closest('.page').offsetHeight;
-    const heightPercent = (firstNameHeight / pageHeight) * 100;
-    
-    // Shift the entire name container upward by the height of the first name part
-    nameElement.style.transform = `translateY(-${heightPercent + 0.5}%)`;
-  } else {
-    // Remove transform if name is not wrapped
-    nameElement.style.transform = 'none';
+  const nameEl = document.querySelector('.p1-name');
+  if (!nameEl) return;
+
+  const page = nameEl.closest('.page');
+  if (!page) return;
+
+  // Must use removeProperty + setProperty with 'important' because the CSS rule
+  // uses font-size:55pt !important, which beats a plain inline style assignment.
+  nameEl.style.removeProperty('font-size');
+
+  const maxWidth = page.offsetWidth * 0.75; // matches max-width:75% in CSS
+  const baseSize = parseFloat(window.getComputedStyle(nameEl).fontSize);
+
+  console.log('[Go Network] adjustNamePosition — page width:', page.offsetWidth, '| maxWidth:', maxWidth.toFixed(1), '| nameEl scrollWidth:', nameEl.scrollWidth, '| baseSize:', baseSize);
+
+  // If text already fits, nothing to do
+  if (nameEl.scrollWidth <= maxWidth) {
+    console.log('[Go Network] Name fits at base size, no resize needed.');
+    return;
   }
+
+  // Shrink in 0.5px steps until it fits — override !important via setProperty
+  let size = baseSize;
+  while (nameEl.scrollWidth > maxWidth && size > 10) {
+    size -= 0.5;
+    nameEl.style.setProperty('font-size', size + 'px', 'important');
+  }
+  console.log('[Go Network] Name resized to:', size.toFixed(1), 'px');
 }
 
 // ════════════════════════ UTIL ════════════════════════
